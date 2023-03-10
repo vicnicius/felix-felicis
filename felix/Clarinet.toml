@@ -1,0 +1,22 @@
+[project]
+name = "felix"
+authors = ["Vini<me@vicnicius.com>"]
+description = "A Stacks lottery that allows you to play on both sides"
+telemetry = true
+
+[[project.requirements]]
+contract_id = "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait"
+
+[contracts.felix-ticket]
+path = "contracts/felix-ticket.clar"
+depends_on = []
+
+[repl]
+costs_version = 2
+parser_version = 2
+
+[repl.analysis]
+passes = ["check_checker"]
+
+[repl.analysis.check_checker]
+strict = true

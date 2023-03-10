@@ -1,0 +1,56 @@
+;; felix-ticket
+;; The NFT that represents a Felix lottery ticket.
+;; Those tickets are only valid to the specific lottery they were bought for.
+(impl-trait 'SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9.nft-trait.nft-trait)
+
+;; FIXME: REPLACE FOR THE ACUTAL ADDRESS
+;; Felix's address
+;; hard-coded to local wallet_9 for testing
+(define-constant felix 'STNHKEPYEPJ8ET55ZZ0M5A34J0R3N5FM2CMMMAZ6)
+(define-constant fee u3)
+;; This will be dealt with dynamically at runtime
+(define-constant ticket-price u97)
+;; This will be dealt with dynamically at runtime
+(define-constant number-of-tickets u100)
+
+;; Errors
+(define-constant err-owner-only (err u100))
+(define-constant err-not-token-owner (err u101))
+(define-constant err-inexistent-token-id (err u102))
+(define-constant err-sold-out (err u200))
+
+;; The NFT name will need to be configurable as well
+(define-non-fungible-token felixes uint)
+
+(define-data-var last-token-id uint u0)
+
+
+(define-read-only (get-last-token-id)
+	(ok (var-get last-token-id)))
+
+(define-public (transfer (token-id uint) (sender principal) (recipient principal))
+	(begin
+        (asserts! (< (var-get last-token-id) token-id) err-inexistent-token-id)
+		;; nft-transfer checks ownership already
+		(asserts! (is-eq tx-sender sender) err-not-token-owner)
+        ;; #[allow(unchecked_data)]
+		(nft-transfer? felixes token-id sender recipient)))
+
+(define-read-only (get-owner (token-id uint))
+	(ok (nft-get-owner? felixes token-id)))
+
+;; Can probably use this once we have the webapp
+(define-read-only (get-token-uri (token-id uint))
+	(ok none))
+
+(define-public (mint (recipient principal))
+	(begin
+		(asserts! (< (var-get last-token-id) number-of-tickets) err-sold-out)
+		(let
+			((token-id (+ (var-get last-token-id) u1)))
+			(try! (stx-transfer? ticket-price tx-sender (as-contract tx-sender)))
+            (try! (stx-transfer? fee tx-sender felix))
+			;; #[allow(unchecked_data)]
+			(try! (nft-mint? felixes token-id recipient))
+			(var-set last-token-id token-id)
+			(ok token-id))))
