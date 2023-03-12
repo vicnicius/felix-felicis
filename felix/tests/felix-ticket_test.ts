@@ -149,3 +149,19 @@ Clarinet.test({
         assertEquals(block.receipts[3].result, types.ok(types.uint(3)));
     }
 });
+
+/**
+ * fund
+ */
+Clarinet.test({
+    name: "Allows deployer to fund the contract with the slot size",
+    fn(chain: Chain, accounts: Map<string, Account>) {
+        const deployer = accounts.get('deployer')!;
+        const slotSize = 1000000000;
+        const block = chain.mineBlock([
+            Tx.contractCall('felix-ticket', 'fund', [], deployer.address),
+        ]);
+        assertEquals(block.receipts[0].result, types.ok(types.uint(slotSize)));
+        block.receipts[0].events.expectSTXTransferEvent(slotSize, deployer.address, `${deployer.address}.felix-ticket`);
+    }
+});

@@ -7,13 +7,13 @@
 ;; Felix's address
 ;; hard-coded to local wallet_9 for testing
 (define-constant felix 'STNHKEPYEPJ8ET55ZZ0M5A34J0R3N5FM2CMMMAZ6)
-(define-constant fee u3)
+(define-constant fee {{fee}})
 
 ;; The following constants will be set at runtime
-(define-constant ticket-price u97)
-(define-constant number-of-tickets u100)
-(define-constant slot-size u1000000000)
-(define-constant amount-of-slots 0)
+(define-constant ticket-price {{ticketPrice}})
+(define-constant number-of-tickets {{numberOfTickets}})
+(define-constant slot-size {{slotSize}})
+(define-constant amount-of-slots {{numberOfSlots}})
 
 ;; Errors
 (define-constant err-owner-only (err u100))
