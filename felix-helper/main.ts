@@ -5,11 +5,11 @@ export const run = (): void => {
     if (contractTemplatePath === undefined) {
         throw new Error('The TEMPLATE_PATH environment variable is not set.')
     }
-    build(contractTemplatePath, './test.clar', {
+    build(contractTemplatePath, {
         fee: 'u3',
         ticketPrice: 'u10000',
         numberOfTickets: 'u1000',
         slotSize: 'u100000',
         numberOfSlots: 'u0'
-    });
+    }, './test.clar');
 }
